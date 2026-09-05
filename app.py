@@ -116,7 +116,6 @@ def ask():
     from flask import request
 
     data = request.get_json(silent=True) or {}
-
     question = data.get("question", "").strip()
 
     if not question:
@@ -125,10 +124,93 @@ def ask():
             "answer": "Please enter a question."
         }), 400
 
-    # Build grounded context from the actual StockSense analytics.
+    # ---------------------------------------------------------
+    # Retrieve only evidence relevant to the user's question.
+    # Deterministic filtering happens BEFORE Gemini.
+    # ---------------------------------------------------------
+
+    question_lower = question.lower()
+
+    # Product/store names that actually exist in our dataset.
+    matched_products = [
+        product.lower()
+        for product in metrics["product_name"].dropna().unique()
+        if product.lower() in question_lower
+    ]
+
+    matched_stores = [
+        store.lower()
+        for store in metrics["store_name"].dropna().unique()
+        if store.lower() in question_lower
+    ]
+
+    # Start with all rows only when the question is clearly asking
+    # for a broad inventory-wide analysis.
+    broad_keywords = [
+        "all",
+        "overall",
+        "inventory",
+        "stock",
+        "products",
+        "store",
+        "stores",
+        "critical",
+        "overstock",
+        "risk",
+        "today",
+        "priority",
+        "priorities",
+        "best",
+        "worst"
+    ]
+
+    is_broad_question = any(
+        keyword in question_lower
+        for keyword in broad_keywords
+    )
+
+    relevant_metrics = metrics.copy()
+
+    # If a specific product or store is mentioned, narrow the evidence.
+    if matched_products or matched_stores:
+        mask = False
+
+        if matched_products:
+            mask = metrics["product_name"].str.lower().isin(matched_products)
+
+        if matched_stores:
+            store_mask = metrics["store_name"].str.lower().isin(matched_stores)
+
+            if isinstance(mask, bool):
+                mask = store_mask
+            else:
+                mask = mask | store_mask
+
+        relevant_metrics = metrics[mask]
+
+    # For broad questions, prioritize important rows rather than
+    # blindly sending every record.
+    elif is_broad_question:
+        relevant_metrics = metrics.sort_values(
+            by=["status", "days_of_stock"],
+            ascending=[True, True]
+        ).head(20)
+
+    # For an ambiguous question, send a small representative sample
+    # instead of the entire dataset.
+    else:
+        relevant_metrics = metrics.sort_values(
+            by="days_of_stock",
+            ascending=True
+        ).head(10)
+
+    # ---------------------------------------------------------
+    # Build grounded evidence context.
+    # ---------------------------------------------------------
+
     context_rows = []
 
-    for _, row in metrics.iterrows():
+    for _, row in relevant_metrics.iterrows():
         context_rows.append(
             f"""
 Store: {row['store_name']}
@@ -150,7 +232,6 @@ Data confidence: {row['data_confidence']:.0f}%
     )
 
     return jsonify(result)
-
 # ---------------------------------------------------------
 # Smart Transfers
 # ---------------------------------------------------------
