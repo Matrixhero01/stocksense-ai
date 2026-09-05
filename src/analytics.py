@@ -7,26 +7,26 @@ calculations.
 """
 
 from pathlib import Path
-
 import pandas as pd
 
+from src.database import initialize_database, load_data_from_database
 
 # Project paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
-
+DB_PATH = DATA_DIR / "stocksense.db"
 
 def load_data():
-    """Load all retailer datasets."""
+    """
+    Load retail data from the local SQLite database.
 
-    products = pd.read_csv(DATA_DIR / "products.csv")
-    stores = pd.read_csv(DATA_DIR / "stores.csv")
-    inventory = pd.read_csv(DATA_DIR / "inventory.csv")
-    sales = pd.read_csv(DATA_DIR / "sales.csv")
+    If the database does not exist, it is created automatically
+    from the CSV demo dataset.
+    """
+    if not DB_PATH.exists():
+        initialize_database()
 
-    sales["date"] = pd.to_datetime(sales["date"])
-
-    return products, stores, inventory, sales
+    return load_data_from_database()
 
 
 def calculate_product_metrics(
