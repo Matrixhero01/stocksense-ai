@@ -1,0 +1,13 @@
+product_id,product_name,category,brand,unit_price
+P001,Maggi 2-Minute Noodles,Instant Food,Nestle,15
+P002,Parle-G Biscuits,Biscuits,Parle,10
+P003,Coca-Cola 750ml,Beverages,Coca-Cola,45
+P004,Tata Salt 1kg,Staples,Tata,28
+P005,Aashirvaad Atta 5kg,Staples,ITC,295
+P006,Amul Butter 500g,Dairy,Amul,285
+P007,Lays Classic 52g,Snacks,PepsiCo,20
+P008,Surf Excel 1kg,Home Care,HUL,210
+P009,Colgate 200g,Personal Care,Colgate,125
+P010,Thums Up 750ml,Beverages,Coca-Cola,45
+P011,Britannia Marie Gold,Biscuits,Britannia,30
+P012,Dettol Liquid 250ml,Personal Care,Reckitt,95

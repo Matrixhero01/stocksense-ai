@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>StockSense AI</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">S</div>
+
+            <div>
+                <h2>StockSense</h2>
+                <span>AI Retail Copilot</span>
+            </div>
+        </div>
+
+        <nav>
+
+            <button class="nav-item active" onclick="showSection('overview')">
+                <span>◈</span>
+                Overview
+            </button>
+
+            <button class="nav-item" onclick="showSection('decisions')">
+                <span>⚡</span>
+                Why Today?
+            </button>
+
+            <button class="nav-item" onclick="showSection('forecast')">
+                <span>◷</span>
+                Future Risk
+            </button>
+
+            <button class="nav-item" onclick="showSection('transfers')">
+                <span>⇄</span>
+                Smart Transfers
+            </button>
+
+            <button class="nav-item" onclick="showSection('data')">
+                <span>⌁</span>
+                Data Detective
+            </button>
+
+            <button class="nav-item" onclick="showSection('ask')">
+    <span>✦</span>
+    Ask StockSense
+</button>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="ai-status">
+                <div class="status-dot"></div>
+
+                <div>
+                    <strong>StockSense Engine</strong>
+                    <small>Monitoring inventory</small>
+                </div>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- HEADER -->
+        <header class="topbar">
+
+            <div>
+                <p class="eyebrow">RETAIL INTELLIGENCE</p>
+                <h1 id="page-title">Inventory Overview</h1>
+            </div>
+
+            <div class="header-right">
+
+                <div class="live-indicator">
+                    <span></span>
+                    LIVE DATA
+                </div>
+
+                <div class="date-display">
+                    Analysis: Aug 25 – Aug 31, 2026
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- OVERVIEW -->
+        <section id="overview" class="section active">
+
+            <div class="hero">
+
+                <div>
+                    <p class="hero-label">GOOD MORNING, STORE MANAGER</p>
+
+                    <h2>
+                        Here's what needs
+                        <span>your attention.</span>
+                    </h2>
+
+                    <p class="hero-description">
+                        StockSense analyzed your inventory, demand and
+                        sales patterns to identify the decisions that matter most today.
+                    </p>
+                </div>
+
+                <div class="hero-badge">
+                    <strong>36</strong>
+                    <span>store-product combinations analyzed</span>
+                </div>
+
+            </div>
+
+
+            <!-- KPI CARDS -->
+            <div class="kpi-grid">
+
+                <div class="kpi-card">
+                    <div class="kpi-label">TOTAL PRODUCTS</div>
+                    <div class="kpi-value" id="total-products">—</div>
+                    <div class="kpi-footer">Across all stores</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-label">INVENTORY UNITS</div>
+                    <div class="kpi-value" id="total-inventory">—</div>
+                    <div class="kpi-footer">Current stock</div>
+                </div>
+
+                <div class="kpi-card danger">
+                    <div class="kpi-label">CRITICAL</div>
+                    <div class="kpi-value" id="critical-count">—</div>
+                    <div class="kpi-footer">Requires attention</div>
+                </div>
+
+                <div class="kpi-card warning">
+                    <div class="kpi-label">OVERSTOCK</div>
+                    <div class="kpi-value" id="overstock-count">—</div>
+                    <div class="kpi-footer">Capital at risk</div>
+                </div>
+
+            </div>
+
+
+            <!-- TODAY'S DECISIONS -->
+            <div class="section-heading">
+
+                <div>
+                    <p class="eyebrow">PRIORITY QUEUE</p>
+                    <h2>Today's Decisions</h2>
+                </div>
+
+                <button class="view-button"
+                        onclick="showSection('decisions')">
+                    View all →
+                </button>
+
+            </div>
+
+            <div id="top-decisions" class="decision-grid">
+                <div class="loading">Analyzing inventory...</div>
+            </div>
+
+
+            <!-- TWO COLUMN -->
+            <div class="two-column">
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <div>
+                            <p class="eyebrow">FUTURE RISK</p>
+                            <h3>If I Do Nothing?</h3>
+                        </div>
+
+                        <button onclick="showSection('forecast')">
+                            Explore →
+                        </button>
+                    </div>
+
+                    <div id="risk-preview"></div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <div>
+                            <p class="eyebrow">INVENTORY BALANCE</p>
+                            <h3>Smart Transfer</h3>
+                        </div>
+
+                        <button onclick="showSection('transfers')">
+                            Explore →
+                        </button>
+                    </div>
+
+                    <div id="transfer-preview"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- WHY TODAY -->
+        <section id="decisions" class="section">
+
+            <div class="page-intro">
+
+                <p class="eyebrow">DECISION ENGINE</p>
+
+                <h2>Why Today?</h2>
+
+                <p>
+                    StockSense ranks inventory decisions by urgency,
+                    demand movement, revenue impact and data confidence.
+                </p>
+
+            </div>
+
+            <div id="decisions-list">
+                <div class="loading">Loading decisions...</div>
+            </div>
+
+        </section>
+
+
+        <!-- FORECAST -->
+        <section id="forecast" class="section">
+
+            <div class="page-intro">
+
+                <p class="eyebrow">FUTURE RISK RADAR</p>
+
+                <h2>If I Do Nothing?</h2>
+
+                <p>
+                    See how long current inventory could last
+                    if demand continues at its current rate.
+                </p>
+
+            </div>
+
+            <div id="forecast-list">
+                <div class="loading">Calculating future risk...</div>
+            </div>
+          
+            <!-- WHAT-IF SIMULATOR -->
+
+<div class="simulator">
+
+    <div class="simulator-header">
+
+        <div>
+            <p class="eyebrow">DECISION SIMULATOR</p>
+
+            <h3>
+                What happens if demand changes?
+            </h3>
+
+            <p>
+                Explore how demand changes affect
+                inventory coverage and stock-out risk.
+            </p>
+        </div>
+
+        <div class="simulator-badge">
+            LIVE CALCULATION
+        </div>
+
+    </div>
+
+
+    <div class="simulator-controls">
+
+        <div class="control-group">
+
+            <label>
+                Product
+            </label>
+
+            <select id="simulation-product">
+            </select>
+
+        </div>
+
+
+        <div class="control-group">
+
+            <label>
+                Store
+            </label>
+
+            <select id="simulation-store">
+            </select>
+
+        </div>
+
+
+        <div class="control-group demand-control">
+
+            <label>
+                Demand change:
+                <strong id="demand-value">0%</strong>
+            </label>
+
+            <input
+                type="range"
+                id="demand-slider"
+                min="-30"
+                max="50"
+                value="0"
+                step="10"
+            >
+
+            <div class="slider-labels">
+                <span>-30%</span>
+                <span>Current</span>
+                <span>+50%</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div id="simulation-result">
+
+        <div class="loading">
+            Select a product to run the simulation.
+        </div>
+
+    </div>
+
+</div>
+        </section>
+
+
+        <!-- TRANSFERS -->
+        <section id="transfers" class="section">
+
+            <div class="page-intro">
+
+                <p class="eyebrow">INVENTORY BALANCING</p>
+
+                <h2>Smart Transfers</h2>
+
+                <p>
+                    Detect excess inventory at one store that can
+                    help prevent shortages at another.
+                </p>
+
+            </div>
+
+            <div id="transfer-list">
+                <div class="loading">Finding opportunities...</div>
+            </div>
+
+        </section>
+
+
+        <!-- DATA DETECTIVE -->
+        <section id="data" class="section">
+
+            <div class="page-intro">
+
+                <p class="eyebrow">DATA QUALITY</p>
+
+                <h2>Data Detective</h2>
+
+                <p>
+                    StockSense checks the quality and completeness
+                    of the data before making decisions.
+                </p>
+
+            </div>
+
+            <div id="data-quality">
+                <div class="loading">Checking data quality...</div>
+            </div>
+
+        </section>
+
+        <!-- ASK STOCKSENSE -->
+<section id="ask" class="section">
+
+    <div class="page-intro">
+
+        <p class="eyebrow">AI DECISION COPILOT</p>
+
+        <h2>Ask StockSense</h2>
+
+        <p>
+            Ask questions about your inventory, sales trends,
+            stock-out risks and transfer opportunities.
+        </p>
+
+    </div>
+
+    <div class="ask-layout">
+
+        <div class="ask-panel">
+
+            <div class="ask-header">
+
+                <div>
+                    <p class="eyebrow">GROUNDED AI</p>
+                    <h3>What would you like to know?</h3>
+                </div>
+
+                <div class="simulator-badge">
+                    GEMINI AI
+                </div>
+
+            </div>
+
+            <div class="suggested-questions">
+
+                <button onclick="askSuggested('Why is Maggi a priority today?')">
+                    Why is Maggi a priority today?
+                </button>
+
+                <button onclick="askSuggested('Which products are at risk of stock-out?')">
+                    Which products are at risk?
+                </button>
+
+                <button onclick="askSuggested('Where do I have excess inventory?')">
+                    Where is excess inventory?
+                </button>
+
+                <button onclick="askSuggested('Which store should receive a stock transfer?')">
+                    Where should I transfer stock?
+                </button>
+
+            </div>
+
+            <div class="ask-input-row">
+
+                <textarea
+                    id="ask-question"
+                    placeholder="Ask StockSense about your inventory..."
+                    rows="3"
+                ></textarea>
+
+                <button
+                    class="ask-button"
+                    onclick="askStockSense()"
+                >
+                    Ask AI →
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="answer-panel" id="ask-answer">
+
+            <div class="empty-answer">
+
+                <div class="empty-icon">✦</div>
+
+                <h3>StockSense is ready</h3>
+
+                <p>
+                    Ask a question and I'll explain the answer
+                    using your actual retail data.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+    </main>
+
+
+    <script src="/static/app.js"></script>
+
+</body>
+
+</html>
